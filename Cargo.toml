@@ -1,0 +1,12 @@
+[package]
+name = "xmachine"
+version = "0.1.0"
+authors = ["adam-mcdaniel <adam.mcdanie17@gmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "bin"
+path = "src/bin.rs"
+
+
+[dependencies]
