@@ -18,6 +18,7 @@ pub struct Machine {
 }
 
 impl Machine {
+    /// Return a new instance of a Machine with empty stack and registers
     pub fn new() -> Self {
         Machine {
             stack: Vec::new(),
@@ -161,10 +162,13 @@ impl Machine {
 }
 
 /// How to print Machine / convert Machine to string
+/// This is for debugging code and seeing the current instance of the machine
 impl Display for Machine {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
-        write!(f, "Machine {{\n    stack: {:?}", self.stack)?;
-        write!(f, "\n    heap:  {:?}\n}}", self.registers)?;
-        Ok(())
+        write!(
+            f,
+            "Machine {{\n\tstack: {:?}\n\theap:  {:?}\n}}",
+            self.stack, self.registers
+        )
     }
 }

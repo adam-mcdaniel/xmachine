@@ -140,7 +140,7 @@ impl Display for Value {
             Self::Number(n) => write!(f, "{}", n),
             Self::List(l) => write!(f, "{:?}", l), // Requires the dummy debug implementation above
             Self::Tree(t) => write!(f, "{:?}", t), // Requires the dummy debug implementation above
-            Self::Function(_) => write!(f, "<Fn>"),
+            Self::Function(func) => write!(f, "{}", func),
             Self::Error(s) => write!(f, "<Exception: '{}'>", s),
             Self::None => write!(f, "None"),
         }

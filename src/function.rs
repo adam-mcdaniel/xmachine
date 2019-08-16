@@ -1,3 +1,5 @@
+use core::fmt::{Display, Error, Formatter};
+
 /// Represents a function that takes a &mut I, returns O,
 /// and contains a captured context C.
 #[derive(Clone)]
@@ -29,6 +31,12 @@ impl<I, O, C> Function<I, O, C> {
     /// Call this function with an input and return the output
     pub fn call(&self, input: &mut I) -> O {
         (self.function_ptr)(input)
+    }
+}
+
+impl<I, O, C> Display for Function<I, O, C> {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        write!(f, "<function at {:?}>", self.function_ptr as *const u8)
     }
 }
 

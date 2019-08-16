@@ -3,10 +3,21 @@ name = "xmachine"
 version = "0.1.0"
 authors = ["adam-mcdaniel <adam.mcdanie17@gmail.com>"]
 edition = "2018"
+default-run = "xasm"
+
 
 [[bin]]
 name = "xasm"
 path = "src/bin.rs"
+
+
+[[bin]]
+name = "benchmark"
+path = "src/benchmark.rs"
+
+[[bin]]
+name = "compile_test"
+path = "src/compile_test.rs"
 
 
 [dependencies]
