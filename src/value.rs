@@ -227,7 +227,6 @@ impl From<Value> for i32 {
     }
 }
 
-
 /// Make Value from String
 impl From<String> for Value {
     fn from(s: String) -> Self {
@@ -252,7 +251,7 @@ impl From<f64> for Value {
 /// Make Value from Number
 impl From<i32> for Value {
     fn from(n: i32) -> Self {
-        Value::Number(n as f64)
+        Value::Number(f64::from(n))
     }
 }
 

@@ -23,9 +23,25 @@ path = "src/bin.rs"
 name = "function"
 path = "test/function.rs"
 
+[[test]]
+name = "church"
+path = "test/church.rs"
 
 [[test]]
-name = "closures"
-path = "test/closures.rs"
+name = "iterative"
+path = "test/iterative.rs"
+
+[[test]]
+name = "object"
+path = "test/object.rs"
+
+[[test]]
+name = "from"
+path = "test/from.rs"
+
+[[test]]
+name = "value"
+path = "test/value.rs"
+
 
 [dependencies]

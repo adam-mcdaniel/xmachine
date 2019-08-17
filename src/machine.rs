@@ -31,24 +31,28 @@ impl Machine {
     /// interface and interact with the virtual machine
     /// ####################################################
 
-
     /// FOR FOREIGN FUNCTIONS
     /// This gets an argument from the call to this foreign
-    /// function by popping a value off the stack, and 
+    /// function by popping a value off the stack, and
     /// converting it to the specified type.
-    pub fn get_arg<T>(&mut self) -> T where T: From<Value> + Default {
+    pub fn get_arg<T>(&mut self) -> T
+    where
+        T: From<Value> + Default,
+    {
         match self.pop() {
             Some(v) => (*v).clone().into(),
-            None => Default::default()
+            None => Default::default(),
         }
     }
 
     /// FOR FOREIGN FUNCTIONS
     /// This pushes a return value onto the stack
-    pub fn return_value<T>(&mut self, value: T) where T: Into<Value> {
+    pub fn return_value<T>(&mut self, value: T)
+    where
+        T: Into<Value>,
+    {
         self.push(Ref::new(value.into()))
     }
-
 
     /// ####################################################
     /// The following functions represent instructions that
@@ -56,7 +60,6 @@ impl Machine {
     /// are not meant to be used by foreign functions, but
     /// they CAN be used without worry.
     /// ####################################################
-
 
     /// Push an item onto the stack
     pub fn push(&mut self, value: Ref<Value>) {
@@ -221,8 +224,7 @@ impl Machine {
 impl Display for Machine {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
         write!(
-            f,
-            "Machine {{\n\tstack: {:?}\n\theap:  {:?}\n}}",
+            f, "Machine {{\n\tstack: {:?}\n\theap:  {:?}\n}}",
             self.stack, self.registers
         )
     }

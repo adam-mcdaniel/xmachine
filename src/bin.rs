@@ -1,7 +1,6 @@
 extern crate xmachine;
 use xmachine::{Machine, Value};
 
-
 fn main() {
     let mut m = Machine::new();
 
