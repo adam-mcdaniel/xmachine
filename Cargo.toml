@@ -3,6 +3,12 @@ name = "xmachine"
 version = "0.1.0"
 authors = ["adam-mcdaniel <adam.mcdanie17@gmail.com>"]
 edition = "2018"
+license = "Apache-2.0"
+description = "A fast, cross platform virtual machine implemented in Rust without the Standard Library"
+categories = ["no-std", "development-tools::ffi", "development-tools", "embedded"]
+readme = "README.md"
+homepage = "https://github.com/adam-mcdaniel/xmachine"
+repository = "https://github.com/adam-mcdaniel/xmachine"
 # We also have to comment out default-run
 # because `cargo tarpaulin` can't parse TOML
 # default-run = "xasm"
