@@ -1,10 +1,9 @@
 extern crate xmachine;
 use xmachine::{Machine, Value};
 
-
 fn main() {
     let mut m = Machine::new();
-    
+
     m.push(Value::function(
         |m: &mut Machine| {
             m.push(Value::string("a"));

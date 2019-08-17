@@ -68,12 +68,12 @@ impl Machine {
         }
     }
 
-    /// 1) Pop off a TABLE value from the stack
-    /// 2) Pop off the INDEX value from the stack
+    /// 1) Pop off the INDEX value from the stack
+    /// 2) Pop off a TABLE value from the stack
     /// 3) Push the TABLE[INDEX] reference onto the stack
     pub fn index(&mut self) {
-        let table = self.pop();
         let index = self.pop();
+        let table = self.pop();
 
         if let (Some(t), Some(i)) = (table, index) {
             let result;
@@ -88,6 +88,26 @@ impl Machine {
                 Ref::from_raw(ptr as *const Value);
             }
             self.push(result);
+        }
+    }
+
+    /// 1) Pop off the INDEX value from the stack
+    /// 2) Pop off a TABLE value from the stack
+    /// 3) Push the TABLE onto the stack
+    /// 4) Call the value at TABLE[INDEX] as a function
+    pub fn method_call(&mut self) {
+        let index = self.pop();
+        let table = self.pop();
+
+        if let (Some(t), Some(i)) = (table, index) {
+            // This is the `self` value to be passed to the function
+            // The `self` value cannot be directly assigned to,
+            // HOWEVER, its members / attributes can be assigned to
+            self.push(Ref::clone(&t));
+            self.push(t);
+            self.push(i);
+            self.index();
+            self.call();
         }
     }
 
@@ -151,6 +171,9 @@ impl Machine {
         if let Some(k) = key_option {
             // Push a cloned reference to the stack
             let key = &(*k).to_string();
+
+            // The reason we don't do an if-let expression here is the fact
+            // that we can't borrow self as both mutable and immutable at once
             if self.registers.contains_key(key) {
                 self.push(Ref::clone(self.registers.get(key).unwrap()));
             } else {
