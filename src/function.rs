@@ -53,3 +53,15 @@ impl<I, O, C: PartialEq> PartialEq for Function<I, O, C> {
         self.context == rhs.context
     }
 }
+
+
+impl<I, O, C> Default for Function<I, O, C> where I: Default, O: Default, C: Default {
+    fn default() -> Self {
+        Self::new(
+            |_: &mut I| {
+                Default::default()
+            },
+            Default::default()
+        )
+    }
+}

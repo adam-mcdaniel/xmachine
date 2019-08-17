@@ -3,7 +3,15 @@ name = "xmachine"
 version = "0.1.0"
 authors = ["adam-mcdaniel <adam.mcdanie17@gmail.com>"]
 edition = "2018"
-default-run = "xasm"
+# We also have to comment out default-run
+# because `cargo tarpaulin` can't parse TOML
+# default-run = "xasm"
+
+# We have to set doctest false package wide.
+# For some reason, `cargo test` can't find a 
+# global memory allocator when building doctests.
+[lib]
+doctest = false
 
 
 [[bin]]
@@ -11,13 +19,13 @@ name = "xasm"
 path = "src/bin.rs"
 
 
-[[bin]]
-name = "benchmark"
-path = "src/benchmark.rs"
+[[test]]
+name = "function"
+path = "test/function.rs"
 
-[[bin]]
-name = "compile_test"
-path = "src/compile_test.rs"
 
+[[test]]
+name = "closures"
+path = "test/closures.rs"
 
 [dependencies]

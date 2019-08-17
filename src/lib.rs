@@ -3,7 +3,7 @@
 extern crate alloc;
 use alloc::sync::Arc;
 
-type Ref<T> = Arc<T>;
+pub type Ref<T> = Arc<T>;
 
 mod value;
 pub use value::Value;

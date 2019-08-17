@@ -26,6 +26,38 @@ impl Machine {
         }
     }
 
+    /// ####################################################
+    /// The following functions are meant to be used to
+    /// interface and interact with the virtual machine
+    /// ####################################################
+
+
+    /// FOR FOREIGN FUNCTIONS
+    /// This gets an argument from the call to this foreign
+    /// function by popping a value off the stack, and 
+    /// converting it to the specified type.
+    pub fn get_arg<T>(&mut self) -> T where T: From<Value> + Default {
+        match self.pop() {
+            Some(v) => (*v).clone().into(),
+            None => Default::default()
+        }
+    }
+
+    /// FOR FOREIGN FUNCTIONS
+    /// This pushes a return value onto the stack
+    pub fn return_value<T>(&mut self, value: T) where T: Into<Value> {
+        self.push(Ref::new(value.into()))
+    }
+
+
+    /// ####################################################
+    /// The following functions represent instructions that
+    /// are natively supported by the virtual machine. These
+    /// are not meant to be used by foreign functions, but
+    /// they CAN be used without worry.
+    /// ####################################################
+
+
     /// Push an item onto the stack
     pub fn push(&mut self, value: Ref<Value>) {
         self.stack.push(value);

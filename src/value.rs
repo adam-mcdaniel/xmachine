@@ -147,6 +147,10 @@ impl Display for Value {
     }
 }
 
+/// ############################################################
+/// The following traits are for implementing foreign functions!
+/// ############################################################
+
 /// Convert Value into a bool
 impl From<Value> for bool {
     fn from(v: Value) -> Self {
@@ -159,5 +163,116 @@ impl From<Value> for bool {
             Value::Error(_) => false,          // errors are false values
             Value::None => false,              // nones are false values
         }
+    }
+}
+
+/// Get a function from the value
+impl From<Value> for String {
+    fn from(v: Value) -> Self {
+        match v {
+            Value::String(s) => s,
+            Value::Error(e) => e,
+            _ => String::from(""),
+        }
+    }
+}
+
+/// Get a function from the value
+impl From<Value> for Function<Machine, (), Machine> {
+    fn from(v: Value) -> Self {
+        match v {
+            Value::Function(f) => f,
+            _ => Function::new(|_: &mut Machine| {}, Machine::new()),
+        }
+    }
+}
+
+/// Convert Value to unwrapped List
+impl From<Value> for Vec<Ref<Value>> {
+    fn from(v: Value) -> Self {
+        match v {
+            Value::List(l) => l,
+            _ => Vec::new(),
+        }
+    }
+}
+
+/// Convert Value to unwrapped Tree
+impl From<Value> for BTreeMap<String, Ref<Value>> {
+    fn from(v: Value) -> Self {
+        match v {
+            Value::Tree(t) => t,
+            _ => BTreeMap::new(),
+        }
+    }
+}
+
+/// Convert to floating point value
+impl From<Value> for f64 {
+    fn from(v: Value) -> Self {
+        match v {
+            Value::Number(n) => n,
+            _ => 0.0,
+        }
+    }
+}
+
+/// Convert to integer value
+impl From<Value> for i32 {
+    fn from(v: Value) -> Self {
+        match v {
+            Value::Number(n) => n as i32,
+            _ => 0,
+        }
+    }
+}
+
+
+/// Make Value from String
+impl From<String> for Value {
+    fn from(s: String) -> Self {
+        Value::String(s)
+    }
+}
+
+/// Make Value from &str
+impl From<&str> for Value {
+    fn from(s: &str) -> Self {
+        Value::String(s.to_string())
+    }
+}
+
+/// Make Value from Number
+impl From<f64> for Value {
+    fn from(n: f64) -> Self {
+        Value::Number(n)
+    }
+}
+
+/// Make Value from Number
+impl From<i32> for Value {
+    fn from(n: i32) -> Self {
+        Value::Number(n as f64)
+    }
+}
+
+/// Make Value from List
+impl From<Vec<Ref<Value>>> for Value {
+    fn from(l: Vec<Ref<Value>>) -> Self {
+        Value::List(l)
+    }
+}
+
+/// Make Value from Tree
+impl From<BTreeMap<String, Ref<Value>>> for Value {
+    fn from(t: BTreeMap<String, Ref<Value>>) -> Self {
+        Value::Tree(t)
+    }
+}
+
+/// Make Value from Function
+impl From<Function<Machine, (), Machine>> for Value {
+    fn from(f: Function<Machine, (), Machine>) -> Self {
+        Value::Function(f)
     }
 }
