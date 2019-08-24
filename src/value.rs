@@ -56,6 +56,26 @@ impl Value {
         Ref::new(Self::None)
     }
 
+    pub fn copy(&self) -> Ref<Self> {
+        match self {
+            Self::List(l) => {
+                let mut list = vec![];
+                for item in l {
+                    list.push(Ref::new((**item).clone()));
+                }
+                Ref::new(Self::List(list))
+            }
+            Self::Tree(l) => {
+                let mut map = BTreeMap::new();
+                for (name, item) in l {
+                    map.insert(name.clone(), Ref::new((**item).clone()));
+                }
+                Ref::new(Self::Tree(map))
+            }
+            _ => Ref::new(self.clone()),
+        }
+    }
+
     /// Call this function in the context of the Machine
     /// captured when this instance of the function was created
     pub fn call(&self, machine: &mut Machine) {

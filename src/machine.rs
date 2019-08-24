@@ -76,7 +76,7 @@ impl Machine {
     pub fn copy(&mut self) {
         let reference = self.pop();
         if let Some(v) = reference {
-            self.push(Ref::new((*v).clone()));
+            self.push(v.copy());
         }
     }
 
@@ -184,6 +184,37 @@ impl Machine {
         }
     }
 
+    /// 1) Pop off a CONDITION function from the stack
+    /// 2) Pop off a THEN function from the stack
+    /// 3) Pop off an ELSE function from the stack
+    /// 4) Call the CONDITION function with the context of this instance
+    /// 5) If the return value is true, run the THEN function with the context of this instance
+    /// 6) If the return value is false, run the ELSE function with the context of this instance
+    pub fn if_then_else(&mut self) {
+        let condition = self.pop();
+        let then_fn = self.pop();
+        let else_fn = self.pop();
+        if let (Some(c), Some(t), Some(e)) = (condition, then_fn, else_fn) {
+            // This will take the top item of the stack and convert it to a bool
+            let get_condition = |machine: &mut Machine| -> bool {
+                match machine.pop() {
+                    Some(v) => (*v).clone().into(),
+                    None => false,
+                }
+            };
+
+            // First, get the condition
+            c.call_global(self);
+            if get_condition(self) {
+                // If the condition is true, run the body of the while loop
+                t.call_global(self);
+            } else {
+                // Push the condition again to test on the next iteration
+                e.call_global(self);
+            }
+        }
+    }
+
     /// 1) Pop off a KEY value from the stack
     /// 2) Pop off a VALUE value from the stack
     /// 3) Assign the value of VALUE to the register named KEY
@@ -224,7 +255,8 @@ impl Machine {
 impl Display for Machine {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
         write!(
-            f, "Machine {{\n\tstack: {:?}\n\theap:  {:?}\n}}",
+            f,
+            "Machine {{\n\tstack: {:?}\n\theap:  {:?}\n}}",
             self.stack, self.registers
         )
     }
