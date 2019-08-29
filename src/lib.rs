@@ -1,9 +1,9 @@
 #![no_std]
 #[macro_use]
 extern crate alloc;
-use alloc::sync::Arc;
+use alloc::rc::Rc;
 
-pub type Ref<T> = Arc<T>;
+pub type Ref<T> = Rc<T>;
 
 mod value;
 pub use value::Value;

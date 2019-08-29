@@ -61,6 +61,32 @@ impl Machine {
     /// they CAN be used without worry.
     /// ####################################################
 
+    /// This function duplicates the current machine. This is
+    /// VERY IMPORTANT. It iterates through the stack and copies
+    /// each item into a new machine.
+    /// 
+    /// This is ONLY used to create the context for functions.
+    /// If we don't do this, the context Machine never goes out
+    /// of scope, and never lets the Refs die. This causes a
+    /// memory leak.
+    /// 
+    /// The addition of this method fixes the memory leak.
+    pub fn duplicate(self) -> Self {
+        let mut new = Self::new();
+        // Copy the stack for the new machine
+        for item in self.stack {
+            new.push((*item).clone().copy());
+        }
+
+        // Copy the registers for the new machine
+        for (key, value) in self.registers {
+            new.registers.insert(key.to_string(), value.copy());
+        }
+
+        // Return new machine
+        new
+    }
+
     /// Push an item onto the stack
     pub fn push(&mut self, value: Ref<Value>) {
         self.stack.push(value);
@@ -117,7 +143,7 @@ impl Machine {
             unsafe {
                 // Take the Ref and convert it to a mutable pointer
                 let ptr = Ref::into_raw(t) as *mut Value;
-                // Assign to the contents of the mutable pointer
+                // Get the indexed value from the pointer to the table in memory
                 result = (*ptr).index(i);
                 // Re-wrap the pointer in a Ref value to properly manage it again
                 Ref::from_raw(ptr as *const Value);

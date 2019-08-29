@@ -1,5 +1,6 @@
 extern crate xmachine;
-use xmachine::{Machine, Ref, Value};
+use xmachine::{Machine, Value, Ref};
+
 
 fn dict(xasm: &mut Machine) {
     xasm.push(Value::tree());
@@ -59,6 +60,7 @@ fn new(xasm: &mut Machine) {
     }
 }
 
+
 fn add(xasm: &mut Machine) {
     let first = xasm.pop();
     let second = xasm.pop();
@@ -67,7 +69,9 @@ fn add(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(Value::number(m_f + n_f));
+        xasm.push(
+            Value::number(m_f + n_f)
+        );
     }
 }
 
@@ -79,7 +83,9 @@ fn sub(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(Value::number(m_f - n_f));
+        xasm.push(
+            Value::number(m_f - n_f)
+        );
     }
 }
 
@@ -91,7 +97,9 @@ fn mul(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(Value::number(m_f * n_f));
+        xasm.push(
+            Value::number(m_f * n_f)
+        );
     }
 }
 
@@ -103,7 +111,9 @@ fn div(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(Value::number(m_f / n_f));
+        xasm.push(
+            Value::number(m_f / n_f)
+        );
     }
 }
 
@@ -161,237 +171,45 @@ fn main() {
     xasm.push(Value::string("div"));
     xasm.store();
 
-    xasm.push(Value::function(
-        |xasm: &mut Machine| {
-            xasm.push(Value::string("dict"));
-            xasm.load();
-            xasm.call();
-            xasm.copy();
-            xasm.push(Value::string("self"));
-            xasm.store();
-            xasm.push(Value::function(
-                |xasm: &mut Machine| {
-                    xasm.push(Value::string("self"));
-                    xasm.store();
-                    xasm.push(Value::string("list"));
-                    xasm.load();
-                    xasm.call();
-                    xasm.copy();
-                    xasm.push(Value::string("self"));
-                    xasm.load();
-                    xasm.push(Value::string("list"));
-                    xasm.index();
-                    xasm.assign();
-                    xasm.push(Value::string("self"));
-                    xasm.load();
-                },
-                &xasm,
-            ));
-            xasm.copy();
-            xasm.push(Value::string("self"));
-            xasm.load();
-            xasm.push(Value::string("new"));
-            xasm.index();
-            xasm.assign();
-            xasm.push(Value::function(
-                |xasm: &mut Machine| {
-                    xasm.push(Value::string("self"));
-                    xasm.store();
 
-                    xasm.push(Value::string("item"));
-                    xasm.store();
-                    xasm.push(Value::string("item"));
-                    xasm.load();
-                    xasm.copy();
-                    xasm.push(Value::string("self"));
-                    xasm.load();
-                    xasm.push(Value::string("list"));
-                    xasm.index();
-                    xasm.copy();
-                    xasm.push(Value::string("push"));
-                    xasm.load();
-                    xasm.call();
-                    xasm.copy();
-                    xasm.push(Value::string("self"));
-                    xasm.load();
-                    xasm.push(Value::string("list"));
-                    xasm.index();
-                    xasm.assign();
-                },
-                &xasm,
-            ));
-            xasm.copy();
-            xasm.push(Value::string("self"));
-            xasm.load();
-            xasm.push(Value::string("push"));
-            xasm.index();
-            xasm.assign();
-            xasm.push(Value::function(
-                |xasm: &mut Machine| {
-                    xasm.push(Value::string("self"));
-                    xasm.store();
-                    xasm.push(Value::function(
-                        |xasm: &mut Machine| {
-                            xasm.push(Value::string("None"));
-                            xasm.load();
-                        },
-                        &xasm,
-                    ));
-                    xasm.push(Value::function(
-                        |xasm: &mut Machine| {
-                            xasm.push(Value::string("self"));
-                            xasm.load();
-                            xasm.push(Value::string("list"));
-                            xasm.index();
-                            xasm.copy();
-                            xasm.push(Value::string("pop"));
-                            xasm.load();
-                            xasm.call();
-                            xasm.copy();
-                            xasm.push(Value::string("self"));
-                            xasm.load();
-                            xasm.push(Value::string("list"));
-                            xasm.index();
-                            xasm.assign();
-                        },
-                        &xasm,
-                    ));
-                    xasm.push(Value::function(
-                        |xasm: &mut Machine| {
-                            xasm.push(Value::string("self"));
-                            xasm.load();
-                            xasm.push(Value::string("list"));
-                            xasm.index();
-                            xasm.copy();
-                            xasm.push(Value::string("len"));
-                            xasm.load();
-                            xasm.call();
-                        },
-                        &xasm,
-                    ));
-                    xasm.if_then_else();
-                },
-                &xasm,
-            ));
-            xasm.copy();
-            xasm.push(Value::string("self"));
-            xasm.load();
-            xasm.push(Value::string("pop"));
-            xasm.index();
-            xasm.assign();
-            xasm.push(Value::function(
-                |xasm: &mut Machine| {
-                    xasm.push(Value::string("self"));
-                    xasm.store();
-                    xasm.push(Value::string("self"));
-                    xasm.load();
-                    xasm.push(Value::string("list"));
-                    xasm.index();
-                    xasm.copy();
-                    xasm.push(Value::string("len"));
-                    xasm.load();
-                    xasm.call();
-                },
-                &xasm,
-            ));
-            xasm.copy();
-            xasm.push(Value::string("self"));
-            xasm.load();
-            xasm.push(Value::string("len"));
-            xasm.index();
-            xasm.assign();
-            xasm.push(Value::string("self"));
-            xasm.load();
-        },
-        &xasm,
-    ));
-    xasm.copy();
-    xasm.push(Value::string("List"));
-    xasm.store();
-    xasm.push(Value::string("List"));
-    xasm.load();
-    xasm.copy();
-    xasm.push(Value::string("new"));
-    xasm.load();
-    xasm.call();
-    xasm.copy();
-    xasm.push(Value::string("l"));
-    xasm.store();
-    xasm.push(Value::number(1000));
-    xasm.copy();
-    xasm.push(Value::string("n"));
-    xasm.store();
-    xasm.push(Value::function(
-        |xasm: &mut Machine| {
-            xasm.push(Value::string("n"));
-            xasm.load();
-            xasm.copy();
-            xasm.push(Value::string("l"));
-            xasm.load();
-            xasm.push(Value::string("push"));
-            xasm.method_call();
-            xasm.push(Value::number(1));
-            xasm.copy();
-            xasm.push(Value::string("n"));
-            xasm.load();
-            xasm.copy();
-            xasm.push(Value::string("sub"));
-            xasm.load();
-            xasm.call();
-            xasm.copy();
-            xasm.push(Value::string("n"));
-            xasm.store();
-        },
-        &xasm,
-    ));
-    xasm.push(Value::function(
-        |xasm: &mut Machine| {
-            xasm.push(Value::string("n"));
-            xasm.load();
-        },
-        &xasm,
-    ));
-    xasm.while_loop();
-    xasm.push(Value::number(100000));
-    xasm.copy();
-    xasm.push(Value::string("n"));
-    xasm.store();
-    xasm.push(Value::function(
-        |xasm: &mut Machine| {
-            xasm.push(Value::number(1));
-            xasm.copy();
-            xasm.push(Value::string("n"));
-            xasm.load();
-            xasm.copy();
-            xasm.push(Value::string("sub"));
-            xasm.load();
-            xasm.call();
-            xasm.copy();
-            xasm.push(Value::string("n"));
-            xasm.store();
-            xasm.push(Value::string("n"));
-            xasm.load();
-            xasm.copy();
-            xasm.push(Value::string("println"));
-            xasm.load();
-            xasm.call();
-        },
-        &xasm,
-    ));
-    xasm.push(Value::function(
-        |xasm: &mut Machine| {
-            xasm.push(Value::string("n"));
-            xasm.load();
-        },
-        &xasm,
-    ));
-    xasm.while_loop();
-    xasm.push(Value::string("l"));
-    xasm.load();
-    xasm.copy();
-    xasm.push(Value::string("println"));
-    xasm.load();
-    xasm.call();
+	// xasm.push(Value::string("True")) 
+xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("a"));
+xasm.store();
+xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("b"));
+xasm.store();
+xasm.push(Value::string("a"));
+xasm.load();
+}, &xasm));
+}, &xasm));
+xasm.copy();
+xasm.push(Value::string("True"));
+xasm.store();
+// xasm.push(Value::string("False")) 
+xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("a"));
+xasm.store();
+xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("b"));
+xasm.store();
+xasm.push(Value::string("b"));
+xasm.load();
+}, &xasm));
+}, &xasm));
+xasm.copy();
+xasm.push(Value::string("False"));
+xasm.store();
+xasm.push(Value::number(1));
+xasm.copy();
+xasm.push(Value::number(2));
+xasm.copy();
+xasm.push(Value::string("True"));
+xasm.load();
+xasm.call();
+xasm.call();
+xasm.copy();
+xasm.push(Value::string("println"));
+xasm.load();
+xasm.call();
 
     println!("{}", xasm);
+
+
 }
