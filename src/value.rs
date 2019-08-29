@@ -56,7 +56,14 @@ impl Value {
         Ref::new(Self::None)
     }
 
+    /// Copies the contents of this value
     pub fn copy(&self) -> Ref<Self> {
+        // In the future, if memory leaks become a problem,
+        // we could try replacing the item clone with an 
+        // item copy.
+        // This would recursively call copy to ensure no
+        // Refs are the same. It might be that we never 
+        // need to change this, though.
         match self {
             Self::List(l) => {
                 let mut list = vec![];
