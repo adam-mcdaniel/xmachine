@@ -36,7 +36,7 @@ impl<I, O, C> Function<I, O, C> {
 
 impl<I, O, C> Display for Function<I, O, C> {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
-        write!(f, "<fn>")
+        write!(f, "<fn at {:?}>", self.function_ptr as *const u8)
     }
 }
 
