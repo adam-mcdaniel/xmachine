@@ -1,12 +1,11 @@
 use core::fmt::{Display, Error, Formatter};
-use crate::Ref;
 
 /// Represents a function that takes a &mut I, returns O,
 /// and contains a captured context C.
 #[derive(Clone)]
 pub struct Function<I, O, C> {
     /// Function pointer to call
-    function_ptr: Ref<dyn Fn(&mut I) -> O>,
+    function_ptr: fn(&mut I) -> O,
     /// The captured context of the function
     context: C,
 }
@@ -17,9 +16,9 @@ impl<I, O, C> Function<I, O, C> {
     /// Create a function from a function pointer and captured context
     /// We use a function pointer because a non-capturing lambda can
     /// decay into a function pointer, and because it's sized!
-    pub fn new(function_ptr: impl 'static + Fn(&mut I) -> O, context: C) -> Self {
+    pub fn new(function_ptr: fn(&mut I) -> O, context: C) -> Self {
         Self {
-            function_ptr: Ref::new(function_ptr),
+            function_ptr,
             context,
         }
     }

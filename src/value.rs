@@ -42,8 +42,11 @@ impl Value {
     }
 
     /// Creates a reference to a Function with a captured context, basically a Closure
-    pub fn function(f: impl 'static + Fn(&mut Machine) -> (), context: &Machine) -> Ref<Self> {
-        Ref::new(Self::Function(Function::new(f, context.clone().duplicate())))
+    pub fn function(f: fn(&mut Machine) -> (), context: &Machine) -> Ref<Self> {
+        Ref::new(Self::Function(Function::new(
+            f,
+            context.clone().duplicate(),
+        )))
     }
 
     /// Creates a reference to an Error value
@@ -59,10 +62,10 @@ impl Value {
     /// Copies the contents of this value
     pub fn copy(&self) -> Ref<Self> {
         // In the future, if memory leaks become a problem,
-        // we could try replacing the item clone with an 
+        // we could try replacing the item clone with an
         // item copy.
         // This would recursively call copy to ensure no
-        // Refs are the same. It might be that we never 
+        // Refs are the same. It might be that we never
         // need to change this, though.
         match self {
             Self::List(l) => {

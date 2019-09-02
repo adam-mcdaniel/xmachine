@@ -64,12 +64,12 @@ impl Machine {
     /// This function duplicates the current machine. This is
     /// VERY IMPORTANT. It iterates through the stack and copies
     /// each item into a new machine.
-    /// 
+    ///
     /// This is ONLY used to create the context for functions.
     /// If we don't do this, the context Machine never goes out
     /// of scope, and never lets the Refs die. This causes a
     /// memory leak.
-    /// 
+    ///
     /// The addition of this method fixes the memory leak.
     pub fn duplicate(self) -> Self {
         let mut new = Self::new();

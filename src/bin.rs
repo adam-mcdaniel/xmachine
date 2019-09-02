@@ -1,7 +1,5 @@
-
 extern crate xmachine;
-use xmachine::{Machine, Value, Ref};
-
+use xmachine::{Machine, Ref, Value};
 
 fn dict(xasm: &mut Machine) {
     xasm.push(Value::tree());
@@ -61,7 +59,6 @@ fn new(xasm: &mut Machine) {
     }
 }
 
-
 fn add(xasm: &mut Machine) {
     let first = xasm.pop();
     let second = xasm.pop();
@@ -70,9 +67,7 @@ fn add(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(
-            Value::number(m_f + n_f)
-        );
+        xasm.push(Value::number(m_f + n_f));
     }
 }
 
@@ -84,9 +79,7 @@ fn sub(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(
-            Value::number(m_f - n_f)
-        );
+        xasm.push(Value::number(m_f - n_f));
     }
 }
 
@@ -98,9 +91,7 @@ fn mul(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(
-            Value::number(m_f * n_f)
-        );
+        xasm.push(Value::number(m_f * n_f));
     }
 }
 
@@ -112,9 +103,7 @@ fn div(xasm: &mut Machine) {
         let m_f = m.to_string().parse::<f64>().unwrap();
         let n_f = n.to_string().parse::<f64>().unwrap();
 
-        xasm.push(
-            Value::number(m_f / n_f)
-        );
+        xasm.push(Value::number(m_f / n_f));
     }
 }
 
@@ -171,145 +160,160 @@ fn main() {
     xasm.copy();
     xasm.push(Value::string("div"));
     xasm.store();
- xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("dict"));
-	xasm.load();
-	xasm.call();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.store();
-	xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("self"));
-	xasm.store();
-	xasm.push(Value::string("x"));
-	xasm.store();
-	xasm.push(Value::string("y"));
-	xasm.store();
-	xasm.push(Value::string("y"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("x"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("goto"));
-	xasm.method_call();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	}, &xasm));
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("new"));
-	xasm.index();
-	xasm.assign();
-	xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("self"));
-	xasm.store();
-	xasm.push(Value::string("x"));
-	xasm.store();
-	xasm.push(Value::string("y"));
-	xasm.store();
-	xasm.push(Value::string("y"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("y"));
-	xasm.index();
-	xasm.copy();
-	xasm.push(Value::string("add"));
-	xasm.load();
-	xasm.call();
-	xasm.copy();
-	xasm.push(Value::string("x"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("x"));
-	xasm.index();
-	xasm.copy();
-	xasm.push(Value::string("add"));
-	xasm.load();
-	xasm.call();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("goto"));
-	xasm.method_call();
-	}, &xasm));
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("move"));
-	xasm.index();
-	xasm.assign();
-	xasm.push(Value::function(|xasm: &mut Machine| {xasm.push(Value::string("self"));
-	xasm.store();
-	xasm.push(Value::string("x"));
-	xasm.store();
-	xasm.push(Value::string("y"));
-	xasm.store();
-	xasm.push(Value::string("x"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("x"));
-	xasm.index();
-	xasm.assign();
-	xasm.push(Value::string("y"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("y"));
-	xasm.index();
-	xasm.assign();
-	}, &xasm));
-	xasm.copy();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	xasm.push(Value::string("goto"));
-	xasm.index();
-	xasm.assign();
-	xasm.push(Value::string("self"));
-	xasm.load();
-	}, &xasm));
-	xasm.copy();
-	xasm.push(Value::string("Point"));
-	xasm.store();
-	xasm.push(Value::number(3));
-	xasm.copy();
-	xasm.push(Value::number(2));
-	xasm.copy();
-	xasm.push(Value::string("Point"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("new"));
-	xasm.load();
-	xasm.call();
-	xasm.copy();
-	xasm.push(Value::string("p"));
-	xasm.store();
-	xasm.push(Value::string("p"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("println"));
-	xasm.load();
-	xasm.call();
-	xasm.push(Value::number(2));
-	xasm.copy();
-	xasm.push(Value::number(1));
-	xasm.copy();
-	xasm.push(Value::string("p"));
-	xasm.load();
-	xasm.push(Value::string("move"));
-	xasm.method_call();
-	xasm.push(Value::string("p"));
-	xasm.load();
-	xasm.copy();
-	xasm.push(Value::string("println"));
-	xasm.load();
-	xasm.call();
-	
+    xasm.push(Value::function(
+        |xasm: &mut Machine| {
+            xasm.push(Value::string("dict"));
+            xasm.load();
+            xasm.call();
+            xasm.copy();
+            xasm.push(Value::string("self"));
+            xasm.store();
+            xasm.push(Value::function(
+                |xasm: &mut Machine| {
+                    xasm.push(Value::string("self"));
+                    xasm.store();
+                    xasm.push(Value::string("x"));
+                    xasm.store();
+                    xasm.push(Value::string("y"));
+                    xasm.store();
+                    xasm.push(Value::string("y"));
+                    xasm.load();
+                    xasm.copy();
+                    xasm.push(Value::string("x"));
+                    xasm.load();
+                    xasm.copy();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                    xasm.push(Value::string("goto"));
+                    xasm.method_call();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                },
+                &xasm,
+            ));
+            xasm.copy();
+            xasm.push(Value::string("self"));
+            xasm.load();
+            xasm.push(Value::string("new"));
+            xasm.index();
+            xasm.assign();
+            xasm.push(Value::function(
+                |xasm: &mut Machine| {
+                    xasm.push(Value::string("self"));
+                    xasm.store();
+                    xasm.push(Value::string("x"));
+                    xasm.store();
+                    xasm.push(Value::string("y"));
+                    xasm.store();
+                    xasm.push(Value::string("y"));
+                    xasm.load();
+                    xasm.copy();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                    xasm.push(Value::string("y"));
+                    xasm.index();
+                    xasm.copy();
+                    xasm.push(Value::string("add"));
+                    xasm.load();
+                    xasm.call();
+                    xasm.copy();
+                    xasm.push(Value::string("x"));
+                    xasm.load();
+                    xasm.copy();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                    xasm.push(Value::string("x"));
+                    xasm.index();
+                    xasm.copy();
+                    xasm.push(Value::string("add"));
+                    xasm.load();
+                    xasm.call();
+                    xasm.copy();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                    xasm.push(Value::string("goto"));
+                    xasm.method_call();
+                },
+                &xasm,
+            ));
+            xasm.copy();
+            xasm.push(Value::string("self"));
+            xasm.load();
+            xasm.push(Value::string("move"));
+            xasm.index();
+            xasm.assign();
+            xasm.push(Value::function(
+                |xasm: &mut Machine| {
+                    xasm.push(Value::string("self"));
+                    xasm.store();
+                    xasm.push(Value::string("x"));
+                    xasm.store();
+                    xasm.push(Value::string("y"));
+                    xasm.store();
+                    xasm.push(Value::string("x"));
+                    xasm.load();
+                    xasm.copy();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                    xasm.push(Value::string("x"));
+                    xasm.index();
+                    xasm.assign();
+                    xasm.push(Value::string("y"));
+                    xasm.load();
+                    xasm.copy();
+                    xasm.push(Value::string("self"));
+                    xasm.load();
+                    xasm.push(Value::string("y"));
+                    xasm.index();
+                    xasm.assign();
+                },
+                &xasm,
+            ));
+            xasm.copy();
+            xasm.push(Value::string("self"));
+            xasm.load();
+            xasm.push(Value::string("goto"));
+            xasm.index();
+            xasm.assign();
+            xasm.push(Value::string("self"));
+            xasm.load();
+        },
+        &xasm,
+    ));
+    xasm.copy();
+    xasm.push(Value::string("Point"));
+    xasm.store();
+    xasm.push(Value::number(3));
+    xasm.copy();
+    xasm.push(Value::number(2));
+    xasm.copy();
+    xasm.push(Value::string("Point"));
+    xasm.load();
+    xasm.copy();
+    xasm.push(Value::string("new"));
+    xasm.load();
+    xasm.call();
+    xasm.copy();
+    xasm.push(Value::string("p"));
+    xasm.store();
+    xasm.push(Value::string("p"));
+    xasm.load();
+    xasm.copy();
+    xasm.push(Value::string("println"));
+    xasm.load();
+    xasm.call();
+    xasm.push(Value::number(2));
+    xasm.copy();
+    xasm.push(Value::number(1));
+    xasm.copy();
+    xasm.push(Value::string("p"));
+    xasm.load();
+    xasm.push(Value::string("move"));
+    xasm.method_call();
+    xasm.push(Value::string("p"));
+    xasm.load();
+    xasm.copy();
+    xasm.push(Value::string("println"));
+    xasm.load();
+    xasm.call();
 }
