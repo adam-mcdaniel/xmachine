@@ -268,6 +268,8 @@ impl Machine {
             // that we can't borrow self as both mutable and immutable at once
             if self.registers.contains_key(key) {
                 self.push(Ref::clone(self.registers.get(key).unwrap()));
+            } else {
+                self.push(Value::error(format!("No register named '{}'", key)));
             }
         }
     }
