@@ -1,4 +1,5 @@
 use crate::{Function, Machine, Ref};
+use core::ops::{Add, Div, Mul, Not, Rem, Sub};
 
 // We need BTreeMap to implement the Tree type
 use alloc::collections::BTreeMap;
@@ -271,6 +272,13 @@ impl From<&str> for Value {
     }
 }
 
+/// Make Value from bool
+impl From<bool> for Value {
+    fn from(n: bool) -> Self {
+        Value::Number(f64::from(n as i32))
+    }
+}
+
 /// Make Value from Number
 impl From<f64> for Value {
     fn from(n: f64) -> Self {
@@ -303,5 +311,100 @@ impl From<BTreeMap<String, Ref<Value>>> for Value {
 impl From<Function<Machine, (), Machine>> for Value {
     fn from(f: Function<Machine, (), Machine>) -> Self {
         Value::Function(f)
+    }
+}
+
+/// ##############################################################
+/// The following traits are for implementing operators and logic!
+/// ##############################################################
+
+/// Add two values
+impl Add<Value> for Value {
+    type Output = Value;
+    fn add(self, rhs: Self) -> Self::Output {
+        match (self, rhs) {
+            // Concat two strings
+            (Self::String(s1), Self::String(s2)) => Self::String(s1 + &s2),
+            // Add two numbers
+            (Self::Number(m), Self::Number(n)) => Self::Number(m + n),
+            // Concat two lists
+            (Self::List(mut l1), Self::List(l2)) => {
+                l1.extend(l2);
+                Self::List(l1)
+            }
+            // Otherwise, return exception
+            (a, b) => Self::Error(format!("Could not add {} and {}", a, b)),
+        }
+    }
+}
+
+/// Subtract two values
+impl Sub<Value> for Value {
+    type Output = Value;
+    fn sub(self, rhs: Self) -> Self::Output {
+        match (self, rhs) {
+            // Subtract two numbers
+            (Self::Number(m), Self::Number(n)) => Self::Number(m - n),
+            // Otherwise, return exception
+            (a, b) => Self::Error(format!("Could not subtract {} and {}", a, b)),
+        }
+    }
+}
+
+/// Multiply two values
+impl Mul<Value> for Value {
+    type Output = Value;
+    fn mul(self, rhs: Self) -> Self::Output {
+        match (self, rhs) {
+            // Repeat a string
+            (Self::String(s1), Self::Number(n)) => Self::String(s1.repeat(n as usize)),
+            // Multiply two numbers
+            (Self::Number(m), Self::Number(n)) => Self::Number(m * n),
+            // Otherwise, return exception
+            (a, b) => Self::Error(format!("Could not multiply {} and {}", a, b)),
+        }
+    }
+}
+
+/// Divide two values
+impl Div<Value> for Value {
+    type Output = Value;
+    fn div(self, rhs: Self) -> Self::Output {
+        match (self, rhs) {
+            // Divide two numbers
+            (Self::Number(m), Self::Number(n)) => Self::Number(m / n),
+            // Otherwise, return exception
+            (a, b) => Self::Error(format!("Could not divide {} and {}", a, b)),
+        }
+    }
+}
+
+/// Remainder of two values
+impl Rem<Value> for Value {
+    type Output = Value;
+    fn rem(self, rhs: Self) -> Self::Output {
+        match (self, rhs) {
+            // Remainder of two numbers
+            (Self::Number(m), Self::Number(n)) => Self::Number(m % n),
+            // Otherwise, return exception
+            (a, b) => Self::Error(format!("Could not find the remainder of {} and {}", a, b)),
+        }
+    }
+}
+
+/// Negate value
+impl Not for Value {
+    type Output = Value;
+    fn not(self) -> Self::Output {
+        match self {
+            // Negate number
+            Self::Number(n) => match n as i32 {
+                // If number is zero, return true
+                0 => Self::Number(1.0),
+                // If number is not zero, return false
+                _ => Self::Number(0.0),
+            },
+            a => Self::Error(format!("Could not negate {}", a)),
+        }
     }
 }
