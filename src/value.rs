@@ -43,7 +43,7 @@ impl Value {
     }
 
     /// Creates a reference to a Function with a captured context, basically a Closure
-    pub fn function(f: fn(&mut Machine) -> (), context: &Machine) -> Ref<Self> {
+    pub fn function(f: impl 'static + Fn(&mut Machine) -> (), context: &Machine) -> Ref<Self> {
         Ref::new(Self::Function(Function::new(
             f,
             context.clone().duplicate(),

@@ -1,6 +1,6 @@
 [package]
 name = "xmachine"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["adam-mcdaniel <adam.mcdanie17@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -23,31 +23,6 @@ doctest = false
 [[bin]]
 name = "xasm"
 path = "src/bin.rs"
-
-
-[[test]]
-name = "function"
-path = "test/function.rs"
-
-[[test]]
-name = "church"
-path = "test/church.rs"
-
-[[test]]
-name = "iterative"
-path = "test/iterative.rs"
-
-[[test]]
-name = "object"
-path = "test/object.rs"
-
-[[test]]
-name = "from"
-path = "test/from.rs"
-
-[[test]]
-name = "value"
-path = "test/value.rs"
 
 
 [dependencies]
