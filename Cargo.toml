@@ -1,6 +1,6 @@
 [package]
 name = "xmachine"
-version = "0.1.10"
+version = "0.1.11"
 authors = ["adam-mcdaniel <adam.mcdanie17@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -18,11 +18,6 @@ repository = "https://github.com/adam-mcdaniel/xmachine"
 # global memory allocator when building doctests.
 [lib]
 doctest = false
-
-
-[[bin]]
-name = "xasm"
-path = "src/bin.rs"
 
 
 [dependencies]

@@ -37,7 +37,12 @@ impl<I, O, C> Function<I, O, C> {
 
 impl<I, O, C> Display for Function<I, O, C> {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
-        write!(f, "<fn>")
+        let ptr = Ref::into_raw(self.function_ptr.clone()) as *const u8;
+        write!(f, "<fn at {:?}>", ptr)?;
+        unsafe {
+            Ref::from_raw(ptr);
+        }
+        Ok(())
     }
 }
 
