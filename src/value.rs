@@ -187,7 +187,7 @@ impl From<Value> for bool {
     fn from(v: Value) -> Self {
         match v {
             Value::String(s) => s != "",       // self != ""
-            Value::Number(n) => n as i32 != 0, // self is non-zero
+            Value::Number(n) => (if n < 0.0 { -n } else { n }) > 0.0000000001, // self is non-zero
             Value::List(l) => !l.is_empty(),   // self is not []
             Value::Tree(t) => !t.is_empty(),   // self is not {}
             Value::Function(_) => true,        // functions are true values
