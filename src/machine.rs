@@ -94,7 +94,10 @@ impl Machine {
 
     /// Pop an item off of the stack, and return it
     pub fn pop(&mut self) -> Option<Ref<Value>> {
-        self.stack.pop()
+        match self.stack.pop() {
+            Some(v) => Some(v),
+            None => Some(Value::none())
+        }
     }
 
     /// 1) Pop off a REFERENCE value from the stack
