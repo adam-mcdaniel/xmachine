@@ -1,6 +1,8 @@
 use core::fmt::{Display, Error, Formatter};
 use crate::Ref;
 
+use alloc::string::ToString;
+
 /// Represents a function that takes a &mut I, returns O,
 /// and contains a captured context C.
 #[derive(Clone)]
@@ -38,7 +40,7 @@ impl<I, O, C> Function<I, O, C> {
 impl<I, O, C> Display for Function<I, O, C> {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
         let ptr = Ref::into_raw(self.function_ptr.clone()) as *const u8;
-        write!(f, "<fn at {:?}>", ptr)?;
+        write!(f, "<fn at {}>", format!("{:?}", ptr)[..8].to_string())?;
         unsafe {
             Ref::from_raw(ptr);
         }
