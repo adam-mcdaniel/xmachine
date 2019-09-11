@@ -39,10 +39,7 @@ impl Machine {
     where
         T: From<Value> + Default,
     {
-        match self.pop() {
-            Some(v) => (*v).clone().into(),
-            None => Default::default(),
-        }
+        (*self.pop()).clone().into()
     }
 
     /// FOR FOREIGN FUNCTIONS
@@ -93,17 +90,18 @@ impl Machine {
     }
 
     /// Pop an item off of the stack, and return it
-    pub fn pop(&mut self) -> Option<Ref<Value>> {
-        self.stack.pop()
+    pub fn pop(&mut self) -> Ref<Value> {
+        match self.stack.pop() {
+            Some(v) => v,
+            None => Value::error("Popped from empty stack, called function with too few arguments")
+        }
     }
 
     /// 1) Pop off a REFERENCE value from the stack
     /// 2) Push a copy the object and remove the reference
     pub fn copy(&mut self) {
-        let reference = self.pop();
-        if let Some(v) = reference {
-            self.push(v.copy());
-        }
+        let value = self.pop();
+        self.push(value.copy());
     }
 
     /// 1) Pop off a REFERENCE value from the stack
@@ -115,17 +113,15 @@ impl Machine {
         let reference = self.pop();
         let value = self.pop();
 
-        if let (Some(r), Some(v)) = (reference, value) {
-            // We cant 'safely' modify a shared reference to a value,
-            // so we need to convert to a mutable pointer in an unsafe block
-            unsafe {
-                // Take the Ref and convert it to a mutable pointer
-                let ptr = Ref::into_raw(r) as *mut Value;
-                // Assign to the contents of the mutable pointer
-                *ptr = (*v).clone();
-                // Re-wrap the pointer in a Ref value to properly manage it again
-                Ref::from_raw(ptr as *const Value);
-            }
+        // We cant 'safely' modify a shared reference to a value,
+        // so we need to convert to a mutable pointer in an unsafe block
+        unsafe {
+            // Take the Ref and convert it to a mutable pointer
+            let ptr = Ref::into_raw(reference) as *mut Value;
+            // Assign to the contents of the mutable pointer
+            *ptr = (*value).clone();
+            // Re-wrap the pointer in a Ref value to properly manage it again
+            Ref::from_raw(ptr as *const Value);
         }
     }
 
@@ -136,20 +132,18 @@ impl Machine {
         let index = self.pop();
         let table = self.pop();
 
-        if let (Some(t), Some(i)) = (table, index) {
-            let result;
-            // We cant 'safely' modify a shared reference to a value,
-            // so we need to convert to a mutable pointer in an unsafe block
-            unsafe {
-                // Take the Ref and convert it to a mutable pointer
-                let ptr = Ref::into_raw(t) as *mut Value;
-                // Get the indexed value from the pointer to the table in memory
-                result = (*ptr).index(i);
-                // Re-wrap the pointer in a Ref value to properly manage it again
-                Ref::from_raw(ptr as *const Value);
-            }
-            self.push(result);
+        let result;
+        // We cant 'safely' modify a shared reference to a value,
+        // so we need to convert to a mutable pointer in an unsafe block
+        unsafe {
+            // Take the Ref and convert it to a mutable pointer
+            let ptr = Ref::into_raw(table) as *mut Value;
+            // Get the indexed value from the pointer to the table in memory
+            result = (*ptr).index(index);
+            // Re-wrap the pointer in a Ref value to properly manage it again
+            Ref::from_raw(ptr as *const Value);
         }
+        self.push(result);
     }
 
     /// 1) Pop off the INDEX value from the stack
@@ -160,26 +154,21 @@ impl Machine {
         let index = self.pop();
         let table = self.pop();
 
-        if let (Some(t), Some(i)) = (table, index) {
-            // This is the `self` value to be passed to the function
-            // The `self` value cannot be directly assigned to,
-            // HOWEVER, its members / attributes can be assigned to
-            self.push(Ref::clone(&t));
-            self.push(t);
-            self.push(i);
-            self.index();
-            self.call();
-        }
+        // This is the `self` value to be passed to the function
+        // The `self` value cannot be directly assigned to,
+        // HOWEVER, its members / attributes can be assigned to
+        self.push(Ref::clone(&table));
+        self.push(table);
+        self.push(index);
+        self.index();
+        self.call();
     }
 
     /// 1) Pop off function from the stack
     /// 2) Call it with this Machine instance
     pub fn call(&mut self) {
         let function = self.pop();
-
-        if let Some(f) = function {
-            f.call(self);
-        }
+        function.call(self);
     }
 
     /// 1) Pop off a CONDITION function from the stack
@@ -190,23 +179,18 @@ impl Machine {
     pub fn while_loop(&mut self) {
         let condition = self.pop();
         let body = self.pop();
-        if let (Some(c), Some(b)) = (condition, body) {
-            // This will take the top item of the stack and convert it to a bool
-            let get_condition = |machine: &mut Machine| -> bool {
-                match machine.pop() {
-                    Some(v) => (*v).clone().into(),
-                    None => false,
-                }
-            };
+        // This will take the top item of the stack and convert it to a bool
+        let get_condition = |machine: &mut Machine| -> bool {
+            (*machine.pop()).clone().into()
+        };
 
-            // First, get the condition
-            c.call_global(self);
-            while get_condition(self) {
-                // If the condition is true, run the body of the while loop
-                b.call_global(self);
-                // Push the condition again to test on the next iteration
-                c.call_global(self);
-            }
+        // First, get the condition
+        condition.call_global(self);
+        while get_condition(self) {
+            // If the condition is true, run the body of the while loop
+            body.call_global(self);
+            // Push the condition again to test on the next iteration
+            condition.call_global(self);
         }
     }
 
@@ -220,24 +204,21 @@ impl Machine {
         let condition = self.pop();
         let then_fn = self.pop();
         let else_fn = self.pop();
-        if let (Some(c), Some(t), Some(e)) = (condition, then_fn, else_fn) {
-            // This will take the top item of the stack and convert it to a bool
-            let get_condition = |machine: &mut Machine| -> bool {
-                match machine.pop() {
-                    Some(v) => (*v).clone().into(),
-                    None => false,
-                }
-            };
 
-            // First, get the condition
-            c.call_global(self);
-            if get_condition(self) {
-                // If the condition is true, run the body of the while loop
-                t.call_global(self);
-            } else {
-                // Push the condition again to test on the next iteration
-                e.call_global(self);
-            }
+        // This will take the top item of the stack and convert it to a bool
+        let get_condition = |machine: &mut Machine| -> bool {
+            (*machine.pop()).clone().into()
+        };
+
+
+        // First, get the condition
+        condition.call_global(self);
+        if get_condition(self) {
+            // If the condition is true, run the body of the while loop
+            then_fn.call_global(self);
+        } else {
+            // Push the condition again to test on the next iteration
+            else_fn.call_global(self);
         }
     }
 
@@ -250,30 +231,25 @@ impl Machine {
         // The value to assign to it
         let value = self.pop();
 
-        if let (Some(k), Some(v)) = (key, value) {
-            // registers[key] = value
-            self.registers.insert((*k).to_string(), v);
-        }
+        // registers[key] = value
+        self.registers.insert(key.to_string(), value);
     }
 
     /// 1) Pop off a KEY value from the stack
     /// 2) Push the value in the register named KEY to the stack
     pub fn load(&mut self) {
-        let key_option = self.pop();
-        if let Some(k) = key_option {
-            // Push a cloned reference to the stack
-            let key = &(*k).to_string();
+        let key = &self.pop().to_string();
 
-            // The reason we don't do an if-let expression here is the fact
-            // that we can't borrow self as both mutable and immutable at once
-            if self.registers.contains_key(key) {
-                self.push(Ref::clone(self.registers.get(key).unwrap()));
-            } else {
-                self.push(Value::error(format!("No register named {}", key)));
-            }
+        // The reason we don't do an if-let expression here is the fact
+        // that we can't borrow self as both mutable and immutable at once
+        if self.registers.contains_key(key) {
+            self.push(Ref::clone(self.registers.get(key).unwrap()));
+        } else {
+            self.push(Value::error(format!("No register named {}", key)));
         }
     }
 }
+
 
 /// How to print Machine / convert Machine to string
 /// This is for debugging code and seeing the current instance of the machine

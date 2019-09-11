@@ -112,6 +112,13 @@ impl Value {
         }
     }
 
+    pub fn is_err(&self) -> bool {
+        match self {
+            Self::Error(_) => true,
+            _ => false
+        }
+    }
+
     /// Return a reference to a value contained within a collection
     pub fn index<S: ToString>(&mut self, s: S) -> Ref<Self> {
         let key = s.to_string();
@@ -187,7 +194,7 @@ impl From<Value> for bool {
     fn from(v: Value) -> Self {
         match v {
             Value::String(s) => s != "",       // self != ""
-            Value::Number(n) => (if n < 0.0 { -n } else { n }) > 0.0000000001, // self is non-zero
+            Value::Number(n) => (if n < 0.0 { -n } else { n }) > 0.000_000_000_1, // self is non-zero
             Value::List(l) => !l.is_empty(),   // self is not []
             Value::Tree(t) => !t.is_empty(),   // self is not {}
             Value::Function(_) => true,        // functions are true values
