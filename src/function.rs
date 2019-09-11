@@ -58,6 +58,15 @@ impl<I, O, C: PartialEq> PartialEq for Function<I, O, C> {
     }
 }
 
+/// Ord operators for Function
+/// This doesn't compare the function pointer,
+/// but instead compares the contexts.
+impl<I, O, C: PartialOrd> PartialOrd for Function<I, O, C> {
+    fn partial_cmp(&self, rhs: &Self) -> Option<core::cmp::Ordering> {
+        self.context.partial_cmp(&rhs.context)
+    }
+}
+
 impl<I, O, C> Default for Function<I, O, C>
 where
     I: Default,

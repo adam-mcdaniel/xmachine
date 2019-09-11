@@ -10,7 +10,7 @@ use alloc::vec::Vec;
 // For implementing Display and Debug
 use core::fmt::{Debug, Display, Error, Formatter};
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, PartialOrd)]
 pub enum Value {
     String(String),
     Number(f64),

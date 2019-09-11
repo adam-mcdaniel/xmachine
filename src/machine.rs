@@ -9,7 +9,7 @@ use alloc::vec::Vec;
 // For implementing Display and Debug
 use core::fmt::{Display, Error, Formatter};
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Clone, PartialEq, PartialOrd)]
 pub struct Machine {
     /// A dynamically allocated stack to push and pop values onto and off of
     pub stack: Vec<Ref<Value>>,
