@@ -55,7 +55,7 @@ mod church {
         m.call();
         m.call();
 
-        assert_eq!(m.get_arg::<f64>(), 1.0);
+        assert_eq!(f64::from(m.get_arg()), 1.0);
 
         m.push(Value::number(0));
         m.push(Value::number(1));
@@ -64,7 +64,7 @@ mod church {
         m.call();
         m.call();
 
-        assert_eq!(m.get_arg::<f64>(), 0.0);
+        assert_eq!(f64::from(m.get_arg()), 0.0);
 
         m.push(Value::number(1));
         m.push(Value::number(0));
@@ -73,6 +73,6 @@ mod church {
         m.call();
         m.call();
 
-        assert_eq!(m.get_arg::<i32>(), 0);
+        assert_eq!(i32::from(m.get_arg()), 0);
     }
 }

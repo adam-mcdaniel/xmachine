@@ -6,8 +6,8 @@ mod iterative {
     use super::*;
 
     fn sub(m: &mut Machine) {
-        let n1 = m.get_arg::<f64>();
-        let n2 = m.get_arg::<f64>();
+        let n1 = m.get_arg();
+        let n2 = m.get_arg();
         m.return_value(n1 - n2);
     }
 

@@ -101,6 +101,6 @@ mod object {
         xasm.push(Value::string("value"));
         xasm.index();
 
-        assert_eq!(xasm.get_arg::<i32>(), 5);
+        assert_eq!(i32::from(xasm.get_arg()), 5);
     }
 }

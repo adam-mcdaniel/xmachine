@@ -35,13 +35,13 @@ impl Machine {
     /// This gets an argument from the call to this foreign
     /// function by popping a value off the stack, and removing
     /// the reference
-    pub fn get_arg<T>(&mut self) -> Value {
+    pub fn get_arg(&mut self) -> Value {
         (*self.pop()).clone()
     }
 
     /// FOR FOREIGN FUNCTIONS
     /// This pushes a return value onto the stack
-    pub fn return_value<T>(&mut self, value: Value) {
+    pub fn return_value(&mut self, value: Value) {
         self.push(Ref::new(value))
     }
 

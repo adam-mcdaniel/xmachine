@@ -14,7 +14,7 @@ mod value {
 
         let f = Value::function(
             |m: &mut Machine| {
-                m.return_value(5);
+                m.return_value(Value::from(5));
             },
             &m,
         );
