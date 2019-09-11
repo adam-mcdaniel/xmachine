@@ -115,7 +115,7 @@ impl Value {
     pub fn is_err(&self) -> bool {
         match self {
             Self::Error(_) => true,
-            _ => false
+            _ => false,
         }
     }
 
@@ -193,13 +193,13 @@ impl Display for Value {
 impl From<Value> for bool {
     fn from(v: Value) -> Self {
         match v {
-            Value::String(s) => s != "",       // self != ""
+            Value::String(s) => s != "", // self != ""
             Value::Number(n) => (if n < 0.0 { -n } else { n }) > 0.000_000_000_1, // self is non-zero
-            Value::List(l) => !l.is_empty(),   // self is not []
-            Value::Tree(t) => !t.is_empty(),   // self is not {}
-            Value::Function(_) => true,        // functions are true values
-            Value::Error(_) => false,          // errors are false values
-            Value::None => false,              // nones are false values
+            Value::List(l) => !l.is_empty(),                                      // self is not []
+            Value::Tree(t) => !t.is_empty(),                                      // self is not {}
+            Value::Function(_) => true, // functions are true values
+            Value::Error(_) => false,   // errors are false values
+            Value::None => false,       // nones are false values
         }
     }
 }

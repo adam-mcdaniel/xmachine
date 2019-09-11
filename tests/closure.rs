@@ -1,7 +1,6 @@
 extern crate xmachine;
 use xmachine::{Machine, Value};
 
-
 #[cfg(test)]
 mod closure_tests {
     use super::*;

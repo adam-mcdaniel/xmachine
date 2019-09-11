@@ -33,22 +33,16 @@ impl Machine {
 
     /// FOR FOREIGN FUNCTIONS
     /// This gets an argument from the call to this foreign
-    /// function by popping a value off the stack, and
-    /// converting it to the specified type.
-    pub fn get_arg<T>(&mut self) -> T
-    where
-        T: From<Value> + Default,
-    {
-        (*self.pop()).clone().into()
+    /// function by popping a value off the stack, and removing
+    /// the reference
+    pub fn get_arg<T>(&mut self) -> Value {
+        (*self.pop()).clone()
     }
 
     /// FOR FOREIGN FUNCTIONS
     /// This pushes a return value onto the stack
-    pub fn return_value<T>(&mut self, value: T)
-    where
-        T: Into<Value>,
-    {
-        self.push(Ref::new(value.into()))
+    pub fn return_value<T>(&mut self, value: Value) {
+        self.push(Ref::new(value))
     }
 
     /// ####################################################
@@ -90,10 +84,11 @@ impl Machine {
     }
 
     /// Pop an item off of the stack, and return it
+    /// If the stack is empty, return an Error
     pub fn pop(&mut self) -> Ref<Value> {
         match self.stack.pop() {
             Some(v) => v,
-            None => Value::error("Popped from empty stack, called function with too few arguments")
+            None => Value::error("Popped from empty stack, called function with too few arguments"),
         }
     }
 
@@ -180,9 +175,7 @@ impl Machine {
         let condition = self.pop();
         let body = self.pop();
         // This will take the top item of the stack and convert it to a bool
-        let get_condition = |machine: &mut Machine| -> bool {
-            (*machine.pop()).clone().into()
-        };
+        let get_condition = |machine: &mut Machine| -> bool { (*machine.pop()).clone().into() };
 
         // First, get the condition
         condition.call_global(self);
@@ -206,10 +199,7 @@ impl Machine {
         let else_fn = self.pop();
 
         // This will take the top item of the stack and convert it to a bool
-        let get_condition = |machine: &mut Machine| -> bool {
-            (*machine.pop()).clone().into()
-        };
-
+        let get_condition = |machine: &mut Machine| -> bool { (*machine.pop()).clone().into() };
 
         // First, get the condition
         condition.call_global(self);
@@ -249,7 +239,6 @@ impl Machine {
         }
     }
 }
-
 
 /// How to print Machine / convert Machine to string
 /// This is for debugging code and seeing the current instance of the machine

@@ -1,5 +1,5 @@
-use core::fmt::{Display, Error, Formatter};
 use crate::Ref;
+use core::fmt::{Display, Error, Formatter};
 
 use alloc::string::ToString;
 
