@@ -123,6 +123,18 @@ impl Value {
     pub fn index<S: ToString>(&mut self, s: S) -> Ref<Self> {
         let key = s.to_string();
         match self {
+            Self::String(s) => {
+                match key.parse::<usize>() {
+                    Ok(n) => {
+                        if s.len() > n {
+                            Value::string(s.chars().nth(n).unwrap().to_string())
+                        } else {
+                            Self::error("String index out of bounds")
+                        }
+                    }
+                    Err(_) => Self::error("Can't index string with non-integer"),
+                }
+            }
             Self::Tree(t) => {
                 // If the current tree does not have a
                 // key with this name, create one
