@@ -52,9 +52,9 @@ impl<I, O, C> Display for Function<I, O, C> {
 /// This doesn't compare the function pointer,
 /// but instead compares the contexts. If the contexts are the same,
 /// it's almost guaranteed that these two functions are the same.
-impl<I, O, C: PartialEq> PartialEq for Function<I, O, C> {
+impl<I, O, C> PartialEq for Function<I, O, C> {
     fn eq(&self, rhs: &Self) -> bool {
-        self.context == rhs.context
+        format!("{}", self) == format!("{}", rhs)
     }
 }
 
