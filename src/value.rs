@@ -72,14 +72,14 @@ impl Value {
             Self::List(l) => {
                 let mut list = vec![];
                 for item in l {
-                    list.push(Ref::new((**item).clone()));
+                    list.push(item.copy());
                 }
                 Ref::new(Self::List(list))
             }
             Self::Tree(l) => {
                 let mut map = BTreeMap::new();
                 for (name, item) in l {
-                    map.insert(name.clone(), Ref::new((**item).clone()));
+                    map.insert(name.clone(), item.copy());
                 }
                 Ref::new(Self::Tree(map))
             }
