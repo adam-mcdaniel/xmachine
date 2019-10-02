@@ -166,6 +166,28 @@ impl Machine {
         function.call(self);
     }
 
+
+    /// 1) Pop off a COUNTER identifier from the stack
+    /// 2) Pop off an ELEMENT identifier from the stack
+    /// 3) Pop off a LIST value from the stack
+    /// 4) Pop off a BODY function from the stack
+    /// 5) For COUNTER, ELEMENT in enumeration of LIST:
+    /// 6)   Store LIST[COUNTER] in ELEMENT
+    /// 7)   Call BODY with current instance
+    /// 8)   Increment COUNTER
+    pub fn for_loop(&mut self) {
+        let counter_name = self.pop();
+        let element_name = self.pop();
+        let iterator = (*self.pop()).clone();
+        let body = self.pop();
+
+        for (index, item) in iterator.into_iter().enumerate() {
+            self.registers.insert(element_name.to_string(), item);
+            self.registers.insert(counter_name.to_string(), Value::number(index as f64));
+            body.call_global(self);
+        }
+    }
+
     /// 1) Pop off a CONDITION function from the stack
     /// 2) Pop off a BODY function from the stack
     /// 3) Call the CONDITION function with the context of this instance
