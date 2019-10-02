@@ -427,3 +427,23 @@ impl Not for Value {
         }
     }
 }
+
+/// Convert Value into Iter
+impl IntoIterator for Value {
+    type Item = Ref<Value>;
+    type IntoIter = alloc::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        match self {
+            Self::List(l) => l.into_iter(),
+            Self::String(s) => {
+                let mut result = vec![];
+                for ch in s.chars() {
+                    result.push(Self::string(ch.to_string()));
+                }
+                result.into_iter()
+            },
+            _ => vec![].into_iter()
+        }
+    }
+}
